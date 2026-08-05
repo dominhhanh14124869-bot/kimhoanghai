@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A GIFT FOR U</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Nền Galaxy -->
+    <canvas id="galaxy"></canvas>
+
+    <!-- Lớp phủ -->
+    <div class="overlay"></div>
+
+    <!-- Khung đăng nhập -->
+    <div class="login-box">
+
+        <h1>Xin chào,<br>Kim Hoàng Hải</h1>
+
+        <p class="subtitle">
+            Đây là một món quà dành riêng cho cậu
+        </p>
+
+        <p class="hint">
+            Nhập mật khẩu để truy cập
+        </p>
+
+        <div class="input-group">
+
+            <span class="lock">🔒</span>
+
+            <input
+                id="password"
+                type="password"
+                placeholder="Mật khẩu"
+                autocomplete="off">
+
+            <span id="toggle">👁</span>
+
+        </div>
+
+        <button id="unlockBtn">
+            ✨ Unlock ✨
+        </button>
+
+        <div id="message"></div>
+
+    </div>
+
+    <!-- Màn hình khi nhập đúng -->
+
+    <div id="success">
+
+        <div class="success-content">
+
+            <div class="star">
+                ✦
+            </div>
+
+            <h2>ACCESS GRANTED</h2>
+
+            <p>Loading your surprise...</p>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Kim Hoàng Hải 🎂</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Great+Vibes&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #fce4ec;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* --- MÀN HÌNH 1: PHONG THƯ HỒNG PASTEL --- */
+    #envelope-stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f472b6 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+    }
+
+    #envelope-stage.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      cursor: pointer;
+      filter: drop-shadow(0 15px 25px rgba(225, 29, 72, 0.25));
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: scale(1.04);
+    }
+
+    .envelope {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      background: #e11d48;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Tờ giấy hé lộ bên trong - giấu kín bên trong túi thư */
+    .letter-preview {
+      position: absolute;
+      bottom: 5px; 
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 140px;
+      background: #ffffff;
+      border-radius: 8px;
+      z-index: 2;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.6s ease-in-out 0.2s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .letter-preview h4 {
+      font-family: 'Caveat', cursive;
+      font-size: 26px;
+      color: #db2777;
+    }
+
+    .letter-preview p {
+      font-size: 13.5px;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    /* Túi thư màu hồng phủ che kín tờ giấy */
+    .pocket {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 160px solid #f472b6;
+      border-right: 160px solid #f472b6;
+      border-bottom: 125px solid #db2777;
+      z-index: 3;
+    }
+
+    /* Nắp phong thư tam giác */
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-top: 125px solid #ec4899;
+      transform-origin: top;
+      transition: transform 0.6s ease-in-out 0.1s;
+      z-index: 4;
+    }
+
+    .heart-seal {
+      position: absolute;
+      top: 115px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 48px;
+      height: 48px;
+      background: #e11d48;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 22px;
+      z-index: 5;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: opacity 0.3s ease;
+    }
+
+    /* Hiệu ứng mở phong thư */
+    .envelope-wrapper.open .flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .envelope-wrapper.open .letter-preview {
+      transform: translate(-50%, -130px);
+      z-index: 6;
+    }
+
+    .envelope-wrapper.open .heart-seal {
+      opacity: 0;
+    }
+
+    .click-hint {
+      margin-top: 35px;
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 6px rgba(219, 39, 119, 0.4);
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.75; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-5px); }
+    }
+
+    .bg-heart {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.5);
+      animation: floatUp 6s infinite linear;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+    }
+
+
+    /* --- MÀN HÌNH 2: NỀN PASTEL & ĐỒ TRANG TRÍ HOÀN HẢO --- */
+    #card-stage {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      /* Dải màu Pastel cực kỳ dịu dàng và sang trọng */
+      background: linear-gradient(135deg, #fefae0 0%, #fef08a 20%, #fed7aa 40%, #fbcfe8 70%, #e0f2fe 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+      overflow-x: hidden;
+    }
+
+    /* Dòng chữ nghệ thuật chìm */
+    .bg-cursive-text {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(55px, 8vw, 130px);
+      color: rgba(217, 119, 6, 0.18);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 1;
+      top: 50%;
+      transform: translateY(-50%) rotate(-3deg);
+      letter-spacing: 2px;
+    }
+
+    /* Đồ trang trí bóng bay, gấu, quà, sao */
+    .deco {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12));
+      animation: floatElement 4s infinite ease-in-out alternate;
+    }
+
+    @keyframes floatElement {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-12px) rotate(4deg); }
+    }
+
+    /* Căn chỉnh vị trí đồ trang trí cân bằng xung quanh */
+    .balloon-top-left     { top: 3%; left: 3%; font-size: 58px; animation-delay: 0s; }
+    .balloon-top-right    { top: 4%; right: 3%; font-size: 58px; animation-delay: 0.6s; }
+    .teddy-top-left       { top: 18%; left: 2%; font-size: 55px; animation-delay: 1.2s; }
+    .teddy-top-right      { top: 20%; right: 2%; font-size: 55px; animation-delay: 0.3s; }
+    .gift-bottom-left     { bottom: 3%; left: 3%; font-size: 60px; animation-delay: 0.8s; }
+    .gift-bottom-right    { bottom: 3%; right: 3%; font-size: 62px; animation-delay: 1.5s; }
+    .teddy-bottom-left    { bottom: 18%; left: 2%; font-size: 58px; animation-delay: 1s; }
+    .teddy-bottom-right   { bottom: 20%; right: 2.5%; font-size: 58px; animation-delay: 0.4s; }
+
+    .star-1 { top: 12%; left: 14%; font-size: 38px; animation-delay: 0.2s; }
+    .star-2 { top: 10%; right: 15%; font-size: 42px; animation-delay: 0.9s; }
+    .star-3 { bottom: 14%; left: 13%; font-size: 36px; animation-delay: 1.4s; }
+    .star-4 { bottom: 15%; right: 14%; font-size: 40px; animation-delay: 0.7s; }
+
+    /* Thiệp giấy trắng ~2/3 màn hình */
+    .letter-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 660px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 50px 42px 65px 42px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(251, 191, 36, 0.3);
+      border: 1px solid #fef3c7;
+      background-image: radial-gradient(#fafafa 70%, transparent 70%);
+      background-size: 8px 8px;
+    }
+
+    .letter-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .letter-header h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 44px;
+      color: #1e293b;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .salutation {
+      font-weight: 700;
+      font-size: 17.5px;
+      color: #0f172a;
+      margin-bottom: 18px;
+    }
+
+    .letter-body p {
+      font-size: 15.5px;
+      line-height: 1.78;
+      color: #334155;
+      margin-bottom: 18px;
+      text-align: justify;
+    }
+
+    .letter-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .heart-icon {
+      color: #e11d48;
+      display: inline-block;
+      margin-left: 3px;
+    }
+
+    /* Con dấu sáp chữ H */
+    .wax-seal {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 62px;
+      height: 62px;
+      background: radial-gradient(circle, #f59e0b 0%, #d97706 70%, #b45309 100%);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.2), inset 0 2px 5px rgba(255,255,255,0.5);
+      border: 3px solid #fbbf24;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .wax-seal:hover {
+      transform: translateX(-50%) scale(1.08);
+    }
+
+    .wax-seal span {
+      font-family: 'Great Vibes', cursive;
+      font-size: 30px;
+      font-weight: bold;
+      color: #451a03;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+    }
+
+    /* Nút đóng thư */
+    .btn-replay {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid #f472b6;
+      color: #db2777;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 50;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .btn-replay:hover {
+      background: #db2777;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Tối ưu hóa trên mobile */
+    @media (max-width: 640px) {
+      .letter-container {
+        padding: 35px 22px 55px 22px;
+      }
+      .letter-header h1 {
+        font-size: 36px;
+      }
+      .letter-body p {
+        font-size: 14.5px;
+      }
+      .deco {
+        scale: 0.7;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="envelope-stage">
+    <div class="bg-heart" style="left: 10%; animation-duration: 7s;">💖</div>
+    <div class="bg-heart" style="left: 25%; animation-duration: 5s;">💕</div>
+    <div class="bg-heart" style="left: 60%; animation-duration: 8s;">💗</div>
+    <div class="bg-heart" style="left: 80%; animation-duration: 6s;">✨</div>
+
+    <div class="envelope-wrapper" id="envelope-btn" onclick="openEnvelope()">
+      <div class="envelope">
+        <div class="letter-preview">
+          <h4>Happy Birthday!</h4>
+          <p>Gửi Kim Hoàng Hải 💌</p>
+        </div>
+        <div class="pocket"></div>
+        <div class="flap"></div>
+        <div class="heart-seal">❤️</div>
+      </div>
+    </div>
+    <div class="click-hint">Chạm vào phong thư để mở nhé 💌</div>
+  </div>
+
+
+  <div id="card-stage">
+    <div class="bg-cursive-text">Happy Birthday to Kim Hoàng Hải</div>
+
+    <div class="deco balloon-top-left">🎈🎈</div>
+    <div class="deco balloon-top-right">🎈🎉</div>
+    <div class="deco teddy-top-left">🧸</div>
+    <div class="deco teddy-top-right">🧸</div>
+    <div class="deco teddy-bottom-left">🧸</div>
+    <div class="deco teddy-bottom-right">🧸</div>
+    <div class="deco gift-bottom-left">🎁🎁</div>
+    <div class="deco gift-bottom-right">🎁🧸</div>
+
+    <div class="deco star-1">⭐✨</div>
+    <div class="deco star-2">🌟⭐</div>
+    <div class="deco star-3">✨</div>
+    <div class="deco star-4">⭐</div>
+
+    <div class="letter-container">
+      <div class="letter-header">
+        <h1>Happy Birthday! 🎂</h1>
+      </div>
+
+      <div class="salutation">Gửi Kim Hoàng Hải,</div>
+
+      <div class="letter-body">
+        <p>
+          Có những ngày bình yên đến lạ, khi tớ chợt nhận ra giữa dòng đời hối hả này, việc có một người như cậu ở bên cạnh là điều may mắn dịu dàng nhất mà vũ trụ đã ưu ái dành tặng cho tớ. Hôm nay là một ngày vô cùng đặc biệt - ngày cậu cất tiếng khóc chào đời, mang theo ánh sáng ấm áp và sự tử tế đến với thế giới này.
+        </p>
+
+        <p>
+          Nhìn lại chặng đường chúng ta đã cùng nhau đi qua, tớ chỉ biết gói gọn hai chữ "cảm ơn" thật sâu sắc từ đáy lòng. Cảm ơn cậu vì đã luôn ở đó, chưa từng vắng mặt vào những thời điểm tớ thấy lòng mình ngổn ngang nhất. Những nỗi buồn vốn dĩ rất nặng nề, nhưng chẳng biết từ bao giờ, chỉ cần chia sẻ cùng cậu, mọi bão giông ngoài kia dường như đều dừng lại sau cánh cửa.
+        </p>
+
+        <p>
+          Tớ biết, bản thân tớ đôi khi chẳng hề dễ chịu. Tớ khó tính, nắng mưa thất thường, và có những lúc tính nết ẩm ương ấy đã vô tình làm tổn thương cậu. Nhưng, điều làm tớ cảm động và trân trọng nhất chính là sự nhẫn nại của bạn. Dù tớ có “xù lông nhím” hay gắt gỏng đến đâu, cậu vẫn chọn cách ở lại - dịu dàng, bao dung và chầm chậm vỗ về tớ bằng tất cả sự thấu hiểu. Cho tớ gửi một lời xin lỗi thật chân thành nhé, vì những lần trót làm cậu buồn, làm cậu phải trăn trở vì sự vô ý của tớ.
+        </p>
+
+        <p>
+          Bước sang tuổi mới, tớ chỉ mong thế giới này sẽ đối xử với Hải thật dịu dàng, đúng như cái cách cậu đã luôn đối xử với mọi người xung quanh. Mong cậu luôn giữ trọn nụ cười rạng rỡ ấy, bình yên trong tâm hồn và gặt hái được thật nhiều thành công trên con đường cậu chọn.
+        </p>
+
+        <p>
+          Và có một điều tớ luôn đau đáu chúc cho cậu: mong rằng trong năm mới này, cậu sẽ sớm gặp được người tri kỷ của riêng mình. Một người đủ tinh tế để nhận ra những mệt mỏi sau sự mạnh mẽ của cậu, đủ dịu dàng để yêu cả những vết xước trong lòng cậu, và sẵn sàng đồng hành cùng cậu đi qua mọi thăng trầm của cuộc đời. Cậu trao đi quá nhiều sự ấm áp cho người khác rồi, giờ là lúc cậu xứng đáng nhận lại một tình yêu thương trọn vẹn và bình yên nhất.
+        </p>
+
+        <p>
+          Tuổi mới thật rực rỡ và hạnh phúc nhé! Cảm ơn cậu vì đã xuất hiện và trở thành một phần xinh đẹp trong thanh xuân này. Tên cậu rất đẹp đó. <span class="heart-icon">❤️</span>
+        </p>
+      </div>
+
+      <div class="wax-seal" onclick="triggerConfetti()" title="Bấm để bắn pháo hoa!">
+        <span>H</span>
+      </div>
+    </div>
+
+    <button class="btn-replay" onclick="closeEnvelope()">💌 Đóng thư lại</button>
+  </div>
+
+  <script>
+    const envelopeWrapper = document.getElementById('envelope-btn');
+    const envelopeStage = document.getElementById('envelope-stage');
+
+    function openEnvelope() {
+      envelopeWrapper.classList.add('open');
+
+      setTimeout(() => {
+        triggerConfetti();
+      }, 400);
+
+      setTimeout(() => {
+        envelopeStage.classList.add('hidden');
+      }, 1000);
+    }
+
+    function closeEnvelope() {
+      envelopeStage.classList.remove('hidden');
+      setTimeout(() => {
+        envelopeWrapper.classList.remove('open');
+      }, 300);
+    }
+
+    function triggerConfetti() {
+      confetti({
+        particleCount: 90,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#f472b6', '#3b82f6', '#facc15', '#4ade80', '#e11d48']
+      });
+
+      setTimeout(() => {
+        confetti({
+          particleCount: 60,
+          angle: 60,
+          spread: 60,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 60,
+          angle: 120,
+          spread: 60,
+          origin: { x: 1 }
+        });
+      }, 200);
+    }
+  </script>
+</body>
+</html>
