@@ -244,7 +244,7 @@ document
 
         setTimeout(() => {
 
-            location.href = "birthday.html";
+            location.href = "happybirthday.html";
 
         }, 2500);
 
